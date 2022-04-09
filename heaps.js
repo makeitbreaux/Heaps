@@ -11,7 +11,7 @@ class Heap {
         return i * 2 + 1;
     }
 
-    getRightChild(i) {
+    getRightChildIndex(i) {
         return i * 2 + 2;
     }
 
@@ -23,16 +23,67 @@ class Heap {
 
     push(key) {
         this.data[this.data.length] = key;
-        heapifyUp();
+        this.heapifyUp();
     }
 
     heapifyUp() {
         let currentIndex = this.data.length - 1;
         
-        while (this.data[currentIndex] > this.data[this.getParentIndex(currentIndex)]); {
+        while (this.data[currentIndex] > this.data[this.getParentIndex(currentIndex)]) {
             this.swap(currentIndex, this.getParentIndex(currentIndex));
 
             currentIndex = this.getParentIndex(currentIndex);
         }
     }
+
+    pull() {
+        const maxValue = this.data[0];
+
+        this.data[0] = this.data.length -1;
+        this.data.length--;
+        this.heapifyDown();
+
+        return maxValue;
+    }
+
+    heapifyDown() {
+        let currentIndex = 0;
+
+        while (this.data[this.getLeftChildIndex(currentIndex)] !== undefined) {
+            let biggestChildIndex = this.getLeftChildIndex(currentIndex);
+
+            if(this.data[this.getRightChildIndex(currentIndex)] !== undefined && this.data[this.getRightChildIndex(currentIndex)] > this.data[this.getLeftChildIndex(currentIndex)]) {
+                biggestChildIndex = this.getRightChildIndex(currentIndex);
+            }
+
+            if (this.data[currentIndex] < this.data[biggestChildIndex]) {
+                this.swap(currentIndex, biggestChildIndex);
+                currentIndex = biggestChildIndex;
+            } else {
+                return;
+            }
+        }
+    }
 }
+
+const heap = new Heap();
+console.log(heap);
+heap.push(25);
+heap.push(5);
+heap.push(40);
+heap.push(70);
+heap.push(90);
+heap.push(44);
+
+console.log(heap.data.join(','));
+
+let a = [];
+a.push(heap.pull());
+a.push(heap.pull());
+a.push(heap.pull());
+a.push(heap.pull());
+a.push(heap.pull());
+
+console.log('Top 5 items:', a);
+
+console.log(heap.data.join(','));
